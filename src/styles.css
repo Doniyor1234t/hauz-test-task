@@ -23,6 +23,9 @@
   --color-error-bg: #fef2f2;
   --color-error-border: #fecaca;
   --color-error-text: #b91c1c;
+  --color-success-bg: #f0fdf4;
+  --color-success-border: #bbf7d0;
+  --color-success-text: #15803d;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -40,6 +43,9 @@
     --color-error-bg: rgb(127 29 29 / 0.25);
     --color-error-border: rgb(248 113 113 / 0.35);
     --color-error-text: #fca5a5;
+    --color-success-bg: rgb(20 83 45 / 0.25);
+    --color-success-border: rgb(74 222 128 / 0.35);
+    --color-success-text: #86efac;
   }
 }
 
@@ -345,6 +351,131 @@ button {
 @media (max-width: 30rem) {
   .role-picker {
     grid-template-columns: 1fr;
+  }
+}
+
+.auth-success {
+  margin: 0.875rem 0 0;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-success-text);
+  background: var(--color-success-bg);
+  border: 1px solid var(--color-success-border);
+  border-radius: 0.5rem;
+}
+
+/* ---------- Profile ---------- */
+
+.profile-page {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 2.5rem 1rem;
+}
+
+.profile-card {
+  max-width: none;
+  padding: 0;
+  overflow: hidden;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.75rem 2rem;
+  border-bottom: 1px solid var(--color-border);
+  background:
+    radial-gradient(ellipse 80% 120% at 0% 0%, var(--color-ring), transparent 70%),
+    var(--color-card);
+}
+
+.profile-avatar {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-accent-text);
+  background: linear-gradient(135deg, var(--color-accent), #a855f7);
+  box-shadow: 0 0 0 4px var(--color-card);
+}
+
+.profile-identity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.375rem;
+  min-width: 0;
+}
+
+.profile-identity .auth-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.profile-role {
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  border-radius: 999px;
+}
+
+.profile-form {
+  gap: 1.125rem;
+  margin: 0;
+  padding: 1.75rem 2rem 2rem;
+}
+
+/* The form uses gap for spacing, so drop the stacked margins. */
+.profile-form .auth-error,
+.profile-form .auth-success {
+  margin: 0;
+}
+
+.profile-label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.profile-counter {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.profile-bio {
+  min-height: 6rem;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.profile-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.25rem;
+}
+
+.profile-actions .auth-button {
+  margin: 0;
+  padding-inline: 1.5rem;
+}
+
+@media (max-width: 30rem) {
+  .profile-header,
+  .profile-form {
+    padding-inline: 1.25rem;
+  }
+
+  .profile-actions .auth-button {
+    width: 100%;
   }
 }
 

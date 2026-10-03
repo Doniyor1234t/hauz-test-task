@@ -1,3 +1,4 @@
+import { meQuery } from '#/lib/queries/me.ts';
 import { safeRedirect } from '#/lib/safe-redirect.ts';
 import { sendCodeFn, verifyCodeFn } from '#/server/auth.functions.ts';
 import { useQueryClient } from '@tanstack/react-query';
@@ -10,6 +11,7 @@ export const Route = createFileRoute('/sign-in')({
 
 function RouteComponent() {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const search = useSearch({
     from: '/sign-in',
   })
@@ -76,6 +78,10 @@ function RouteComponent() {
       if (!result.success) {
         throw new Error(result.error ?? 'Invalid code')
       }
+
+      // The session cookie is now set; refetch `me` so the header updates.
+      await queryClient.invalidateQueries({ queryKey: meQuery.queryKey })
+
 
       await navigate({
         to: redirectTo,

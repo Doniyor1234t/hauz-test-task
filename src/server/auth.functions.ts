@@ -10,6 +10,13 @@ const onboardingSchema = z.object({
   role: z.enum(['property_owner', 'realtor']),
 })
 
+const profileUpdateSchema = z.object({
+  firstName: z.string().trim().min(1).max(100).optional(),
+  lastName: z.string().trim().min(1).max(100).optional(),
+  contactEmail: z.string().trim().email().optional(),
+  bio: z.string().trim().max(500).optional(),
+})
+
 
 function errorMessage(error: unknown) {
   return error instanceof Error ? error.message : String(error)
@@ -163,3 +170,29 @@ export const completeOnboarding = createServerFn({ method: 'POST' })
     }
   })
   
+
+
+export const updateProfile = createServerFn({ method: 'POST' })
+  .inputValidator(profileUpdateSchema)
+  .handler(async ({ data }) => {
+    const secret = readCookie()
+
+    if (!secret) {
+      throw new Error('Not authenticated')
+    }
+
+    const changes = Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== undefined),
+    )
+
+    // The Function rejects an empty update; nothing changed, nothing to do.
+    if (Object.keys(changes).length === 0) {
+      return null
+    }
+
+    // The Function maps camelCase fields to the snake_case columns, treats
+    // null as "clear", and identifies the caller from the session itself.
+    const execution = await callFunction(secret, ExecutionMethod.PATCH, changes)
+
+    return JSON.parse(execution.responseBody)
+  })

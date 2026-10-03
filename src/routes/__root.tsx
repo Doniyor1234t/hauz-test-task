@@ -4,6 +4,7 @@ import {
   Link,
   Scripts,
   createRootRouteWithContext,
+  useNavigate,
 } from '@tanstack/react-router'
 
 import appCss from '../styles.css?url'
@@ -31,11 +32,16 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 function RootDocument({ children }: { children: React.ReactNode }) {
   const { data: me } = useQuery(meQuery)
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
   async function handleLogout() {
     await logOut()
 
     queryClient.setQueryData(meQuery.queryKey, null)
+
+    navigate({
+      to: '/sign-in',
+    })
   }
   return (
     <html lang="en">
