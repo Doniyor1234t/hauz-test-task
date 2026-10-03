@@ -91,73 +91,106 @@ function RouteComponent() {
     }
   }
 
-  if (step === 'email') { 
+  if (step === 'email') {
     return (
-      <main>
-        <h1>Sign in</h1>
+      <main className="auth-page">
+        <div className="auth-card">
+          <div className="auth-brand">Hauz</div>
 
-        <form onSubmit={handleSendCode}>
-          <label htmlFor="email">Email</label>
+          <h1 className="auth-title">Sign in</h1>
+          <p className="auth-subtitle">
+            Enter your email and we'll send you a one-time code.
+          </p>
 
-          <input
-            id="email"
-            type="email"
-            autoComplete="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            required
-          />
+          <form className="auth-form" onSubmit={handleSendCode}>
+            <label className="auth-label" htmlFor="email">
+              Email
+            </label>
 
-          {error && <p role="alert">{error}</p>}
+            <input
+              id="email"
+              className="auth-input"
+              type="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+            />
 
-          <button type="submit" disabled={loading}>
-            {loading ? 'Sending…' : 'Send code'}
-          </button>
-        </form>
+            {error && (
+              <p className="auth-error" role="alert">
+                {error}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              className="auth-button"
+              disabled={loading}
+            >
+              {loading ? 'Sending…' : 'Send code'}
+            </button>
+          </form>
+        </div>
       </main>
     )
   }
 
-  
-
   return (
-    <main>
-      <h1>Enter your code</h1>
+    <main className="auth-page">
+      <div className="auth-card">
+        <div className="auth-brand">Hauz</div>
 
-      <p>
-        We sent a code to <strong>{email}</strong>.
-      </p>
+        <h1 className="auth-title">Enter your code</h1>
+        <p className="auth-subtitle">
+          We sent a code to <strong>{email}</strong>.
+        </p>
 
-      <form onSubmit={handleVerifyCode}>
-        <label htmlFor="code">Code</label>
+        <form className="auth-form" onSubmit={handleVerifyCode}>
+          <label className="auth-label" htmlFor="code">
+            Code
+          </label>
 
-        <input
-          id="code"
-          inputMode="numeric"
-          autoComplete="one-time-code"
-          value={code}
-          onChange={(event) => setCode(`${event.target.value}`)}
-          required
-        />
+          <input
+            id="code"
+            className="auth-input auth-input--code"
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            placeholder="123456"
+            value={code}
+            onChange={(event) => setCode(`${event.target.value}`)}
+            required
+          />
 
-        {error && <p role="alert">{error}</p>}
+          {error && (
+            <p className="auth-error" role="alert">
+              {error}
+            </p>
+          )}
 
-        <button type="submit" disabled={loading}>
-          {loading ? 'Verifying…' : 'Verify code'}
-        </button>
+          <button
+            type="submit"
+            className="auth-button"
+            disabled={loading}
+          >
+            {loading ? 'Verifying…' : 'Verify code'}
+          </button>
 
-        <button
-          type="button"
-          disabled={loading}
-          onClick={() => {
-            setStep('email')
-            setCode('')
-            setError(null)
-          }}
-        >
-          Use a different email
-        </button>
-      </form>
+          <button
+            type="button"
+            className="auth-link"
+            disabled={loading}
+            onClick={() => {
+              setStep('email')
+              setCode('')
+              setError(null)
+            }}
+          >
+            Use a different email
+          </button>
+        </form>
+      </div>
     </main>
   )
 }
