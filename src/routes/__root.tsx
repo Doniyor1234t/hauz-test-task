@@ -24,6 +24,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     links: [{ rel: 'stylesheet', href: appCss }],
   }),
   shellComponent: RootDocument,
+  loader: async ({ context }) => 
+    context.queryClient.ensureQueryData(meQuery),
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {

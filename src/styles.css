@@ -227,6 +227,127 @@ button {
     0 12px 32px -12px rgb(0 0 0 / 0.18);
 }
 
+.auth-card--wide {
+  max-width: 30rem;
+}
+
+.auth-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.875rem;
+}
+
+@media (max-width: 30rem) {
+  .auth-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.auth-input:disabled {
+  opacity: 0.6;
+}
+
+/* ---------- Onboarding role picker ---------- */
+
+.role-picker {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  border: none;
+  min-width: 0;
+}
+
+.role-picker legend {
+  padding: 0;
+  float: left;
+  grid-column: 1 / -1;
+}
+
+.role-option {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  margin: 0;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background: var(--color-input-bg);
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.role-option:hover {
+  border-color: var(--color-muted);
+}
+
+/* Visually hidden but still focusable and announced. */
+.role-option input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  pointer-events: none;
+}
+
+.role-option:has(input:checked) {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 8%, var(--color-input-bg));
+  box-shadow: 0 0 0 1px var(--color-accent);
+}
+
+.role-option:has(input:focus-visible) {
+  box-shadow: 0 0 0 4px var(--color-ring);
+}
+
+.role-option::after {
+  content: '';
+  position: absolute;
+  top: 0.875rem;
+  right: 0.875rem;
+  width: 1rem;
+  height: 1rem;
+  box-sizing: border-box;
+  border: 1.5px solid var(--color-border);
+  border-radius: 50%;
+  transition: border 0.15s;
+}
+
+.role-option:has(input:checked)::after {
+  border: 5px solid var(--color-accent);
+}
+
+.role-option__title {
+  padding-right: 1.5rem;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.role-option__description {
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+}
+
+.role-picker:disabled .role-option {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+@media (max-width: 30rem) {
+  .role-picker {
+    grid-template-columns: 1fr;
+  }
+}
+
 .auth-brand {
   display: inline-flex;
   align-items: center;

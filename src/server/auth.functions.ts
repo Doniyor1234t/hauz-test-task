@@ -1,9 +1,15 @@
 import { createServerFn } from '@tanstack/react-start'
-import { ID, Account, Query, TablesDB } from 'node-appwrite'
-import { adminClient, clearSessionCookie, readCookie, sessionClient, setSessionCookie } from './appwrite';
+import { ID, Account, Query, TablesDB, ExecutionMethod } from 'node-appwrite'
+import { adminClient, callFunction, clearSessionCookie, readCookie, sessionClient, setSessionCookie } from './appwrite';
 import { z } from 'zod'
 
 const mail = z.string().trim().email()
+const onboardingSchema = z.object({
+  firstName: z.string().trim().min(1).max(100),
+  lastName: z.string().trim().min(1).max(100),
+  role: z.enum(['property_owner', 'realtor']),
+})
+
 
 function errorMessage(error: unknown) {
   return error instanceof Error ? error.message : String(error)
@@ -132,3 +138,28 @@ export const logOut = createServerFn({ method: 'POST' }).handler(
     }
   },
 )
+
+
+
+export const completeOnboarding = createServerFn({ method: 'POST' })
+  .inputValidator(onboardingSchema)
+  .handler(async ({ data }) => {
+    const secret = readCookie()
+
+    if (!secret) {
+      throw new Error('Not authenticated')
+    }
+
+    const execution = await callFunction(secret, ExecutionMethod.POST, {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      role: data.role,
+    })
+
+    // callFunction already rejects non-2xx.
+    // Both 200 and 201 therefore arrive here as success.
+    return {
+      status: execution.responseStatusCode,
+    }
+  })
+  

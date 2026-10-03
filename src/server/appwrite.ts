@@ -1,5 +1,5 @@
 import { createServerOnlyFn } from '@tanstack/react-start'
-import { Client } from 'node-appwrite'
+import { Client, ExecutionMethod, Functions } from 'node-appwrite'
 import {
   deleteCookie,
   getCookie,
@@ -78,3 +78,49 @@ export const clearSessionCookie = createServerOnlyFn(() => {
     path: '/',
   })
 })
+
+
+export const callFunction = createServerOnlyFn(
+  async (
+    secret: string,
+    method: ExecutionMethod,
+    body?: unknown,
+  ) => {
+    const { functionId } = getEnv()
+
+    if (!functionId) {
+      throw new Error('Missing APPWRITE_FUNCTION_ID')
+    }
+
+    const functions = new Functions(sessionClient(secret))
+
+    const execution = await functions.createExecution({
+      functionId,
+      // The Function routes on path; the default "/" matches nothing (404).
+      xpath: '/personal-account',
+      method,
+      headers: { 'content-type': 'application/json' },
+      body:
+        body === undefined
+          ? undefined
+          : JSON.stringify(body),
+    })
+
+    const status = execution.responseStatusCode
+
+    if (status < 200 || status >= 300) {
+      // Surface the Function's own message (e.g. a validation issue).
+      let detail = ''
+      try {
+        const body = JSON.parse(execution.responseBody)
+        detail = body.issues?.[0]?.message ?? body.message ?? ''
+      } catch {}
+
+      throw new Error(
+        detail || `Appwrite function failed with status ${status}`,
+      )
+    }
+
+    return execution
+  },
+)
