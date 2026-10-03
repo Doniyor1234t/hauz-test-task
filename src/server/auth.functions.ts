@@ -1,6 +1,6 @@
 import { createServerFn } from '@tanstack/react-start'
-import { ID, Account } from 'node-appwrite'
-import { adminClient, setSessionCookie } from './appwrite';
+import { ID, Account, Query, TablesDB } from 'node-appwrite'
+import { adminClient, clearSessionCookie, readCookie, sessionClient, setSessionCookie } from './appwrite';
 import { z } from 'zod'
 
 const mail = z.string().trim().email()
@@ -54,3 +54,81 @@ export const verifyCodeFn = createServerFn({ method: 'POST' })
       return { success: false, error: errorMessage(error) }
     }
   })
+
+
+
+export const getMe = createServerFn({ method: 'GET' }).handler(async () => {
+    const secret = readCookie()
+
+    if (!secret) return null
+
+    let user
+    try {
+      user = await new Account(sessionClient(secret)).get()
+    } catch (error) {
+      if (
+        error &&
+        typeof error === 'object' &&
+        'code' in error &&
+        error.code === 401
+      ) {
+        clearSessionCookie()
+        return null
+      }
+
+      throw error
+    }
+
+    // Uses the admin key, so a failure here says nothing about the user's
+    // session — don't clear the cookie for it.
+    let account = null
+    try {
+      const result = await new TablesDB(adminClient()).listRows({
+        databaseId: "main",
+        tableId: process.env.PERSONAL_ACCOUNTS_TABLE_ID || "",
+        queries: [
+          Query.equal('appwrite_user_id', user.$id),
+          Query.limit(1),
+        ],
+      })
+      account = result.rows[0] ?? null
+    } catch (error) {
+      console.error('Error loading personal account:', error)
+    }
+
+    return {
+      user,
+      account,
+    }
+  })
+
+export const logOut = createServerFn({ method: 'POST' }).handler(
+  async () => {
+    const secret = readCookie()
+
+    if (!secret) {
+      return
+    }
+
+    try {
+      const account = new Account(sessionClient(secret))
+
+      await account.deleteSession({
+        sessionId: 'current',
+      })
+    } catch (error) {
+      if (
+        error &&
+        typeof error === 'object' &&
+        'code' in error &&
+        error.code === 401
+      ) {
+        // Already logged out/expired.
+      } else {
+        throw error
+      }
+    } finally {
+      clearSessionCookie()
+    }
+  },
+)
