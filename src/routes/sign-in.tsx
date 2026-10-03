@@ -14,7 +14,9 @@ function RouteComponent() {
   const queryClient = useQueryClient()
   const search = useSearch({
     from: '/sign-in',
-  })
+  }) as {
+    redirect?: string | undefined
+  }
 
   const [step, setStep] = useState<'email' | 'code'>('email')
   const [email, setEmail] = useState('')

@@ -63,17 +63,17 @@ function ProfilePage() {
 
     try {
       const changes: {
-        firstName?: string | null
-        lastName?: string | null
-        contactEmail?: string | null
-        bio?: string | null
+        firstName?: string | undefined
+        lastName?: string | undefined
+        contactEmail?: string | undefined
+        bio?: string | undefined
       } = {}
 
       Object.assign(changes, {
-        firstName: firstName.trim() || null,
-        lastName: lastName.trim() || null,
-        contactEmail: contactEmail.trim() || null,
-        bio: bio.trim() || null,
+        firstName: firstName.trim() || undefined,
+        lastName: lastName.trim() || undefined,
+        contactEmail: contactEmail.trim() || undefined,
+        bio: bio.trim() || undefined,
       })
 
       await updateProfile({
