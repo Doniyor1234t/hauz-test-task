@@ -1,6 +1,12 @@
 import { createServerOnlyFn } from '@tanstack/react-start'
 import { Client } from 'node-appwrite'
+import {
+  deleteCookie,
+  getCookie,
+  setCookie,
+} from '@tanstack/react-start/server'
 
+const SESSION_COOKIE = 'appwrite_session'
 
 const getEnv = createServerOnlyFn(() => {
   const endpoint = process.env.APPWRITE_ENDPOINT
@@ -39,4 +45,36 @@ export const adminClient = createServerOnlyFn(() => {
   }
 
   return createClient().setKey(apiKey)
+})
+
+
+export const sessionClient = createServerOnlyFn(
+  (secret: string) => {
+    if (!secret) {
+      throw new Error('Missing Appwrite session secret')
+    }
+
+    return createClient().setSession(secret)
+  },
+)
+
+export const readCookie = createServerOnlyFn(() => {
+  return getCookie(SESSION_COOKIE)
+})
+
+export const setSessionCookie = createServerOnlyFn(
+  (value: string) => {
+    setCookie(SESSION_COOKIE, value, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      path: '/',
+    })
+  },
+)
+
+export const clearSessionCookie = createServerOnlyFn(() => {
+  deleteCookie(SESSION_COOKIE, {
+    path: '/',
+  })
 })
