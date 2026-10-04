@@ -140,6 +140,19 @@ button {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: var(--color-text);
+  text-decoration: none;
+  border-radius: 999px;
+  transition: opacity 0.15s;
+}
+
+.site-user:hover {
+  opacity: 0.8;
+}
+
+.site-user:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 .site-avatar {

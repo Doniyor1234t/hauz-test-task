@@ -1,6 +1,4 @@
 # NOTES
-
-
 ## Decisions
 
 - **Auth is server-only.Sessions use an httpOnly cookie, and the browser never sees the session secret or API key.all TanStack Start server functions protected with createServerOnlyFn.
@@ -25,3 +23,14 @@
   onboarding.
 - Use real UI components, add i18n (uz / ru / en) and an accessibility pass.
   I added light styling, but it wasn't in scope.
+
+## Agent failures
+
+- Wrong role values in onboarding: the agent used PROPERTY_OWNER / REALTOR instead of the accepted property_owner / realtor, which would have caused invalid_request. Caught and fixed in ad70407.
+- Commit b7cd098 caused this by changing || null to || undefined, likely to satisfy the server schema. This hid the error instead of fixing it.
+- After onboarding, meQuery isn't refreshed, leaving account: null cached for up to 60s. This causes the wrong header name and redirects /profile back to /onboarding. The agent invalidated meQuery after sign-in and profile updates but forgot it in onboarding. Fixed: onboarding now calls invalidateQueries on meQuery before navigating, as sign-in and profile already do.
+- Also made new query call inside getRouter() It keeps router/query state isolated per instance, making SSR safer by preventing request-specific cache from leaking or being shared between users.
+- Agent miss clickablnes on profile page in header
+- etc... sorry if it was a bit unclear which reason was that i miss the last note from 01 cadiate brief task 
+
+PEACE)

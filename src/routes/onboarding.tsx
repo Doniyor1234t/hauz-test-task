@@ -1,4 +1,6 @@
+import { meQuery } from '#/lib/queries/me.ts';
 import { completeOnboarding } from '#/server/auth.functions.ts';
+import { useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react';
 
@@ -8,6 +10,7 @@ export const Route = createFileRoute('/onboarding')({
 
 function RouteComponent() {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -41,6 +44,8 @@ function RouteComponent() {
       if (result.status !== 200 && result.status !== 201) {
         throw new Error('Unable to complete onboarding')
       }
+
+      await queryClient.invalidateQueries({ queryKey: meQuery.queryKey })
 
       await navigate({
         to: '/',

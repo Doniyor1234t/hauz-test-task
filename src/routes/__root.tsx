@@ -60,14 +60,14 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <nav className="site-nav">
             {me ? (
               <>
-                <span className="site-user">
+                <Link to="/profile" className="site-user">
                   <span className="site-avatar" aria-hidden="true">
                     {(me.account?.first_name ?? me.user.name ?? '?')
                       .charAt(0)
                       .toUpperCase()}
                   </span>
                   {me.account?.first_name ?? me.user.name}
-                </span>
+                </Link>
 
                 <button
                   type="button"
